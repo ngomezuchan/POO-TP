@@ -8,3 +8,4 @@ public interface IProcesadorPago {
     boolean validarDatos() throws PagoE;
     String obtenerComprobante();
 }
+//esto lo hice opcional para darle un tono de realidad y simular la compra

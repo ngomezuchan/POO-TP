@@ -9,3 +9,4 @@ public interface IAutenticacion {
     void cerrarSesion();
     boolean registrar(Cliente cliente) throws AutentiE;
 }
+// esto para en caso de que ya haya un cliente registrado y se este registrando con el mismo nombre yy contrasena
