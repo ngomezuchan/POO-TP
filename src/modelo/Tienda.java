@@ -23,7 +23,7 @@ public class Tienda implements IAutenticacion {
         this.pedidos = new ArrayList<>();
         this.clienteActual = null;
         
-        // Inicializar gestores de persistencia
+        //creas los archivos .dat
         this.gestorClientes = new GestorPersistencia<>("clientes.dat");
         this.gestorProductos = new GestorPersistencia<>("productos.dat");
         this.gestorPedidos = new GestorPersistencia<>("pedidos.dat");
@@ -32,9 +32,9 @@ public class Tienda implements IAutenticacion {
         cargarDatos();
         
         // si no hay productos, cargar algunos de ejemplo
-        if (productos.isEmpty()) {
-            inicializarProductosEjemplo();
-        }
+        /*if (productos.isEmpty()) {
+            inicializarProductosEjemplo(); 
+        }*/
     }
 
     @Override
@@ -151,7 +151,7 @@ public class Tienda implements IAutenticacion {
     }
     
     /**
-     # inicializa productos de ejemplo
+     # inicializa productos de ejemplo | ver si sacarlo, porque ya estan en el archivo
      */
     private void inicializarProductosEjemplo() {
         productos.add(new Producto("P001", "Laptop Dell", 45000.00, 10));

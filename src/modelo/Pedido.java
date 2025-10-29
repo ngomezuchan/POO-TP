@@ -4,11 +4,6 @@ import excepciones.PagoE;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-/**
- * Clase Pedido
- * GRASP: Controller - Coordina la creación del pedido
- * GRASP: Information Expert - Conoce y calcula el impuesto
- */
 public class Pedido implements Serializable {
     private static final long serialVersionUID = 1L;
     

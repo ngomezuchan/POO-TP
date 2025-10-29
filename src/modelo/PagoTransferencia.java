@@ -23,7 +23,7 @@ public class PagoTransferencia extends Pago {
             throw new PagoE("El banco no puede estar vacío");
         }
         
-        // Simulación de validación bancaria
+        // seleccionar bancos
         String[] bancosValidos = {"Banco Nacional", "Banco Provincial", "Banco Santander", 
                                  "Banco BBVA", "Banco Galicia", "Banco Macro"};
         
@@ -32,6 +32,7 @@ public class PagoTransferencia extends Pago {
             if (b.equalsIgnoreCase(banco)) {
                 bancoValido = true;
                 break;
+                 //los bancos los podes poner en mayuscula y en miniscula
             }
         }
         
