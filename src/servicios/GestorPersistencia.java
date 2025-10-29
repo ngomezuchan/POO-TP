@@ -94,62 +94,7 @@ public class GestorPersistencia<T extends Serializable> implements IPersistencia
     }
 
     
-    /**
-     # crea la copia de seguridad del archivo
-     */
-    public boolean crearBackup() {
-        File archivoOriginal = new File(nombreArchivo);
-        if (!archivoOriginal.exists()) {
-            return false;
-        }
-        
-        String nombreBackup = nombreArchivo + ".backup";
-        File archivoBackup = new File(nombreBackup);
-        
-        try (FileInputStream fis = new FileInputStream(archivoOriginal);
-             FileOutputStream fos = new FileOutputStream(archivoBackup)) {
-            
-            byte[] buffer = new byte[1024];
-            int longitud;
-            
-            while ((longitud = fis.read(buffer)) > 0) {
-                fos.write(buffer, 0, longitud);
-            }
-            
-            return true;
-        } catch (IOException e) {
-            System.err.println("Error al crear backup: " + e.getMessage());
-            return false;
-        }
-    }
+    //borre lo de la copia de seguridad, inecesario y cada tanto rompia el archivo
     
-    /**
-     # vuelve desde la copia de seguridad
-     */
-    public boolean restaurarBackup() {
-        String nombreBackup = nombreArchivo + ".backup";
-        File archivoBackup = new File(nombreBackup);
-        
-        if (!archivoBackup.exists()) {
-            return false;
-        }
-        
-        File archivoOriginal = new File(nombreArchivo);
-        
-        try (FileInputStream fis = new FileInputStream(archivoBackup);
-             FileOutputStream fos = new FileOutputStream(archivoOriginal)) {
-            
-            byte[] buffer = new byte[1024];
-            int longitud;
-            
-            while ((longitud = fis.read(buffer)) > 0) {
-                fos.write(buffer, 0, longitud);
-            }
-            
-            return true;
-        } catch (IOException e) {
-            System.err.println("Error al restaurar backup: " + e.getMessage());
-            return false;
-        }
-    }
+    
 }

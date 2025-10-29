@@ -1,9 +1,8 @@
 package modelo;
 
-import excepciones.PagoException;
+import excepciones.PagoE;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 
 /**
  * Clase Pedido
@@ -55,17 +54,17 @@ public class Pedido implements Serializable {
     }
     
 
-    public boolean procesarPago(Pago pago) throws PagoException {
+    public boolean procesarPago(Pago pago) throws PagoE {
         if (pago == null) {
             throw new IllegalArgumentException("El pago no puede ser null");
         }
         
         if (this.estado != EstadoPedido.PENDIENTE) {
-            throw new PagoException("El pedido ya fue procesado");
+            throw new PagoE("El pedido ya fue procesado");
         }
         
         if (Math.abs(pago.getMonto() - this.montoTotal) > 0.01) {
-            throw new PagoException(String.format(
+            throw new PagoE(String.format(
                 "El monto del pago ($%.2f) no coincide con el total del pedido ($%.2f)",
                 pago.getMonto(), this.montoTotal
             ));
@@ -85,7 +84,7 @@ public class Pedido implements Serializable {
     
 
     public void mostrarResumen() {
-        System.out.println("\n========== RESUMEN DEL PEDIDO #" + idPedido + " ==========");
+        System.out.println("\nRESUMEN DE PEDIDO #" + idPedido);
         System.out.println("Cliente: " + cliente.getNombre() + " (ID: " + cliente.getId() + ")");
         System.out.println("Fecha: " + fechaPedido);
         System.out.println("Estado: " + estado);
@@ -100,7 +99,7 @@ public class Pedido implements Serializable {
             System.out.println("\n--- Información del Pago ---");
             pago.mostrar();
         }
-        System.out.println("================================================\n");
+        System.out.println("-------------------------------------------\n");
     }
     
 

@@ -1,11 +1,11 @@
 package interfaces;
 
 import modelo.Cliente;
-import excepciones.AutenticacionException;
+import excepciones.AutentiE;
 
 
 public interface IAutenticacion {
-    Cliente iniciarSesion(String nombre, String contrasena) throws AutenticacionException;
+    Cliente iniciarSesion(String nombre, String contrasena) throws AutentiE;
     void cerrarSesion();
-    boolean registrar(Cliente cliente) throws AutenticacionException;
+    boolean registrar(Cliente cliente) throws AutentiE;
 }

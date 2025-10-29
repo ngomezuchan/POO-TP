@@ -1,19 +1,17 @@
-package main;
-
-import modelo.*;
+package principal;
 import excepciones.*;
-import java.util.Scanner;
 import java.util.InputMismatchException;
+import java.util.Scanner;
+import modelo.*;
 
 
 public class Main {
-    
+
     private static Tienda tienda;
     private static Scanner scanner;
     private static Carrito carritoActual;
-    
-    public static void main(String[] args) {
 
+    public static void main(String[] args) {
         tienda = new Tienda();
         scanner = new Scanner(System.in);
         carritoActual = new Carrito();
@@ -62,20 +60,20 @@ public class Main {
      muestra el menú principal
      */
     private static void mostrarMenuPrincipal() {
-        System.out.println("\nMENÚ");
+        System.out.println("\nMENU");
         
         if (tienda.hayClienteLogueado()) {
             System.out.println("Usuario: " + tienda.getClienteActual().getNombre());
         }
         
-        System.out.println("1. Iniciar Sesión");
+        System.out.println("1. Iniciar Sesion");
         System.out.println("2. Registrar Nuevo Cliente");
         System.out.println("3. Ingresar a la Tienda");
-        System.out.println("4. Cerrar Sesión");
+        System.out.println("4. Cerrar Sesion");
 
         System.out.println("0. Salir");
 
-        System.out.print("Seleccione una opción: ");
+        System.out.print("Seleccione una opcion: ");
     }
     
 
@@ -123,13 +121,13 @@ public class Main {
         System.out.println(" Cliente: " + tienda.getClienteActual().getNombre());
         System.out.println(" Items en carrito: " + carritoActual.getCantidadItems());
 
-        System.out.println(" 1. Ver catalogo de productos            ");
-        System.out.println(" 2. Agregar producto al carrito          ");
-        System.out.println(" 3. Ver carrito                          ");
-        System.out.println(" 4. Eliminar producto del carrito        ");
-        System.out.println(" 5. Realizar pedido                      ");
-        System.out.println(" 6. Vaciar carrito                       ");
-        System.out.println(" 0. Volver al menu principal             ");
+        System.out.println(" 1. Ver catalogo de productos");
+        System.out.println(" 2. Agregar producto al carrito");
+        System.out.println(" 3. Ver carrito");
+        System.out.println(" 4. Eliminar producto del carrito");
+        System.out.println(" 5. Realizar pedido");
+        System.out.println(" 6. Vaciar carrito");
+        System.out.println(" 0. Volver al menu principal");
 
         System.out.print("Seleccione una opción: ");
     }
@@ -148,7 +146,7 @@ public class Main {
             tienda.iniciarSesion(nombre, contrasena);
             carritoActual = new Carrito(); // Nuevo carrito para la sesión
             
-        } catch (AutenticacionException e) {
+        } catch (AutentiE e) {
             System.err.println("Error de autenticación: " + e.getMessage());
         }
     }
@@ -176,7 +174,7 @@ public class Main {
             
             tienda.registrar(nombre, contrasena);
             
-        } catch (AutenticacionException e) {
+        } catch (AutentiE e) {
             System.err.println("Error en el registro: " + e.getMessage());
         } catch (IllegalArgumentException e) {
             System.err.println("Datos invalidos: " + e.getMessage());
@@ -291,7 +289,7 @@ public class Main {
             
         } catch (IllegalStateException e) {
             System.err.println("Error al crear pedido: " + e.getMessage());
-        } catch (PagoException e) {
+        } catch (PagoE e) {
             System.err.println("Error en el pago: " + e.getMessage());
         }
     }

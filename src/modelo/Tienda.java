@@ -1,7 +1,7 @@
 package modelo;
 
 import interfaces.IAutenticacion;
-import excepciones.AutenticacionException;
+import excepciones.AutentiE;
 import servicios.GestorPersistencia;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,17 +38,17 @@ public class Tienda implements IAutenticacion {
     }
 
     @Override
-    public Cliente iniciarSesion(String nombre, String contrasena) throws AutenticacionException {
+    public Cliente iniciarSesion(String nombre, String contrasena) throws AutentiE {
         if (clienteActual != null) {
-            throw new AutenticacionException("ya hay una sesion activa");
+            throw new AutentiE("ya hay una sesion activa");
         }
         
         if (nombre == null || nombre.trim().isEmpty()) {
-            throw new AutenticacionException("el nombre de usuario no puede estar vacío");
+            throw new AutentiE("el nombre de usuario no puede estar vacío");
         }
         
         if (contrasena == null || contrasena.isEmpty()) {
-            throw new AutenticacionException("la contraseña no puede estar vacía");
+            throw new AutentiE("la contraseña no puede estar vacía");
         }
         
         for (Cliente cliente : clientes) {
@@ -58,27 +58,27 @@ public class Tienda implements IAutenticacion {
                     System.out.println("sesioon iniciada exitosamente. Bienvenido, " + cliente.getNombre());
                     return cliente;
                 } else {
-                    throw new AutenticacionException("contraseña incorrecta");
+                    throw new AutentiE("contraseña incorrecta");
                 }
             }
         }
         
-        throw new AutenticacionException("usuario no encontrado: " + nombre);
+        throw new AutentiE("usuario no encontrado: " + nombre);
     }
     
     /**
      # registra nuevo cliente
      */
     @Override
-    public boolean registrar(Cliente cliente) throws AutenticacionException {
+    public boolean registrar(Cliente cliente) throws AutentiE {
         if (cliente == null) {
-            throw new AutenticacionException("Los datos del cliente no pueden ser null");
+            throw new AutentiE("Los datos del cliente no pueden ser null");
         }
         
         // se fija si ya existia
         for (Cliente c : clientes) {
             if (c.getNombre().equalsIgnoreCase(cliente.getNombre())) {
-                throw new AutenticacionException("Ya existe un usuario con ese nombre");
+                throw new AutentiE("Ya existe un usuario con ese nombre");
             }
         }
         
@@ -88,7 +88,7 @@ public class Tienda implements IAutenticacion {
         return true;
     }
 
-    public boolean registrar(String nombre, String contrasena) throws AutenticacionException {
+    public boolean registrar(String nombre, String contrasena) throws AutentiE {
         Cliente nuevoCliente = new Cliente(nombre, contrasena);
         return registrar(nuevoCliente);
     }
@@ -225,7 +225,7 @@ public class Tienda implements IAutenticacion {
         }
     }
     
-    // Getters
+    // getters
     public Cliente getClienteActual() {
         return clienteActual;
     }
