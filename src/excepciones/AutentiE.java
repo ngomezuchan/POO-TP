@@ -3,9 +3,9 @@ package excepciones;
 /**
   la excepción por problemas de autenticación
  */
-public class AutenticacionException extends TiendaException {
+public class AutentiE extends TiendaE {
     
-    public AutenticacionException(String mensaje) {
+    public AutentiE(String mensaje) {
         super(mensaje);
     }
 }

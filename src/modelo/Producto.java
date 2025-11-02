@@ -17,7 +17,7 @@ public class Producto implements Serializable {
         this.stock = stock;
     }
     
-    // Getters y Setters
+    // getters y Setters
     public String getId() {
         return id;
     }
@@ -70,6 +70,6 @@ public class Producto implements Serializable {
     
     @Override
     public String toString() {
-        return String.format("Producto [ID: %s, Nombre: %s, Precio: $%.2f, Stock: %d]",id, nombre, precio, stock);
+        return String.format("prroducto [ID: %s, Nombre: %s, Precio: $%.2f, Stock: %d]",id, nombre, precio, stock);
     }
 }

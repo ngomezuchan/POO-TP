@@ -3,9 +3,9 @@ package excepciones;
 /**
   excepcion para los problemas relacionados con pagos
  */
-public class PagoException extends TiendaException {
+public class PagoE extends TiendaE {
     
-    public PagoException(String mensaje) {
+    public PagoE(String mensaje) {
         super(mensaje);
     }
 }
