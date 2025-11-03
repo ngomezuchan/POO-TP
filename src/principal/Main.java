@@ -146,7 +146,7 @@ public class Main {
             tienda.iniciarSesion(nombre, contrasena);
             carritoActual = new Carrito(); // Nuevo carrito para la sesión
             
-        } catch (AutentiE e) {
+        } catch (AutenticacionException e) {
             System.err.println("Error de autenticación: " + e.getMessage());
         }
     }
@@ -174,7 +174,7 @@ public class Main {
             
             tienda.registrar(nombre, contrasena);
             
-        } catch (AutentiE e) {
+        } catch (AutenticacionException e) {
             System.err.println("Error en el registro: " + e.getMessage());
         } catch (IllegalArgumentException e) {
             System.err.println("Datos invalidos: " + e.getMessage());
@@ -289,7 +289,7 @@ public class Main {
             
         } catch (IllegalStateException e) {
             System.err.println("Error al crear pedido: " + e.getMessage());
-        } catch (PagoE e) {
+        } catch (PagoException e) {
             System.err.println("Error en el pago: " + e.getMessage());
         }
     }

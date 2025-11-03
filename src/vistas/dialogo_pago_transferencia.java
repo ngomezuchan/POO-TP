@@ -2,6 +2,7 @@ package vistas;
 
 import modelo.PagoTransferencia;
 import excepciones.PagoException;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.Arrays;

@@ -1,13 +1,11 @@
 package vistas;
 
+import excepciones.AutenticacionException;
 import modelo.Tienda;
 import modelo.Cliente;
-import excepciones.AutenticacionException;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class ventana_login extends JFrame {
 

@@ -1,6 +1,6 @@
 package modelo;
 
-import excepciones.PagoE;
+import excepciones.PagoException;
 import java.time.YearMonth;
 
 
@@ -19,18 +19,18 @@ public class PagoTarjeta extends Pago {
     }
     
     @Override
-    public boolean validarDatos() throws PagoE {
+    public boolean validarDatos() throws PagoException {
         if (nombreTarjeta == null || nombreTarjeta.trim().isEmpty()) {
-            throw new PagoE("El nombre del titular no puede estar vacío");
+            throw new PagoException("El nombre del titular no puede estar vacío");
         }
         
         if (nombreTarjeta.length() < 3) {
-            throw new PagoE("El nombre del titular es muy corto");
+            throw new PagoException("El nombre del titular es muy corto");
         }
         
 
         if (codigoTarjeta < 100 || codigoTarjeta > 9999) {
-            throw new PagoE("Código de seguridad inválido (debe ser de 3 o 4 dígitos)");
+            throw new PagoException("Código de seguridad inválido (debe ser de 3 o 4 dígitos)");
         }
         
 
@@ -39,12 +39,12 @@ public class PagoTarjeta extends Pago {
         return true;
     }
     
-    private void validarFechaVencimiento() throws PagoE {
+    private void validarFechaVencimiento() throws PagoException {
         int mes = vencimientoTarjeta / 100;
         int año = vencimientoTarjeta % 100;
         
         if (mes < 1 || mes > 12) {
-            throw new PagoE("Mes de vencimiento inválido");
+            throw new PagoException("Mes de vencimiento inválido");
         }
         
 
@@ -55,7 +55,7 @@ public class PagoTarjeta extends Pago {
         YearMonth actual = YearMonth.now();
         
         if (vencimiento.isBefore(actual)) {
-            throw new PagoE("La tarjeta está vencida");
+            throw new PagoException("La tarjeta está vencida");
         }
     }
     

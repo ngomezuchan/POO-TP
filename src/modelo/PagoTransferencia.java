@@ -1,6 +1,6 @@
 package modelo;
 
-import excepciones.PagoE;
+import excepciones.PagoException;
 
 public class PagoTransferencia extends Pago {
     private static final long serialVersionUID = 1L;
@@ -15,15 +15,16 @@ public class PagoTransferencia extends Pago {
     }
     
     private int generarNumeroComprobanteTransferencia() {
-        return (int) (Math.random() * 900000) + 100000;} //para el numero ese gigante del comprobante
+        return (int) (Math.random() * 900000) + 100000;
+    }
     
     @Override
-    public boolean validarDatos() throws PagoE {
+    public boolean validarDatos() throws PagoException {
         if (banco == null || banco.trim().isEmpty()) {
-            throw new PagoE("El banco no puede estar vacío");
+            throw new PagoException("El banco no puede estar vacío");
         }
         
-        // seleccionar bancos
+        // Simulación de validación bancaria
         String[] bancosValidos = {"Banco Nacional", "Banco Provincial", "Banco Santander", 
                                  "Banco BBVA", "Banco Galicia", "Banco Macro"};
         
@@ -32,12 +33,11 @@ public class PagoTransferencia extends Pago {
             if (b.equalsIgnoreCase(banco)) {
                 bancoValido = true;
                 break;
-                 //los bancos los podes poner en mayuscula y en miniscula
             }
         }
         
         if (!bancoValido) {
-            throw new PagoE("Banco no válido: " + banco);
+            throw new PagoException("Banco no válido: " + banco);
         }
         
         return true;
@@ -51,17 +51,32 @@ public class PagoTransferencia extends Pago {
     }
     
     @Override
-    public boolean procesarPago(double monto) throws PagoE {
+    public boolean procesarPago(double monto) throws PagoException {
         System.out.println("Procesando transferencia bancaria...");
         System.out.println("Conectando con " + banco + "...");
-        return true;
+        
+        // Simulación de procesamiento
+        try {
+            Thread.sleep(1000); // Simula tiempo de procesamiento
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        
+        boolean resultado = super.procesarPago(monto);
+        
+        if (resultado) {
+            System.out.println("Transferencia aprobada - Comprobante: " + numeroComprobante);
+        } else {
+            System.out.println("Transferencia rechazada");
+        }
+        
+        return resultado;
     }
-
+    
     // getters y setters
-    /**public int getNumeroComprobanteTransferencia() {
+    public int getNumeroComprobanteTransferencia() {
         return numeroComprobante;
-    }*/ 
-    //revisar
+    }
     
     public String getBanco() {
         return banco;

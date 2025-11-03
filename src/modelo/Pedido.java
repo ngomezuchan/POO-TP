@@ -1,6 +1,6 @@
 package modelo;
 
-import excepciones.PagoE;
+import excepciones.PagoException;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -49,17 +49,17 @@ public class Pedido implements Serializable {
     }
     
 
-    public boolean procesarPago(Pago pago) throws PagoE {
+    public boolean procesarPago(Pago pago) throws PagoException {
         if (pago == null) {
             throw new IllegalArgumentException("El pago no puede ser null");
         }
         
         if (this.estado != EstadoPedido.PENDIENTE) {
-            throw new PagoE("El pedido ya fue procesado");
+            throw new PagoException("El pedido ya fue procesado");
         }
         
         if (Math.abs(pago.getMonto() - this.montoTotal) > 0.01) {
-            throw new PagoE(String.format(
+            throw new PagoException(String.format(
                 "El monto del pago ($%.2f) no coincide con el total del pedido ($%.2f)",
                 pago.getMonto(), this.montoTotal
             ));
