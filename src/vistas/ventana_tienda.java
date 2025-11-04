@@ -3,6 +3,8 @@ package vistas;
 import modelo.Tienda;
 import modelo.Producto;
 import modelo.Carrito;
+import principal.Main;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
@@ -50,7 +52,7 @@ public class ventana_tienda extends JFrame {
                     tienda.cerrarSesion();
                 }
                 if (ventana_tienda.getFrames().length == 0) {
-                    new ventana_login().setVisible(true);
+                    new Main().setVisible(true);
                 }
             }
         });

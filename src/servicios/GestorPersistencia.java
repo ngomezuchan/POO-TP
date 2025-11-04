@@ -39,8 +39,6 @@ public class GestorPersistencia<T extends Serializable> implements IPersistencia
         lista.add(objeto);
         guardarLista(lista);
     }
-
-
     
     /**
      # carga todos los objetos del archivo
@@ -68,10 +66,6 @@ public class GestorPersistencia<T extends Serializable> implements IPersistencia
         }
     }
 
-
-
-
-
     /**
       guarda una lista losobjetos
      */
@@ -96,9 +90,5 @@ public class GestorPersistencia<T extends Serializable> implements IPersistencia
         }
         return false;
     }
-
-    
-    //borre lo de la copia de seguridad, inecesario y cada tanto rompia el archivo
-    
     
 }
