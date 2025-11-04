@@ -1,7 +1,6 @@
 package modelo;
 
 import java.io.Serializable;
-// Asegúrese de que Carrito esté disponible en el mismo paquete modelo
 
 public class Cliente implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -9,14 +8,12 @@ public class Cliente implements Serializable {
     private String nombre;
     private int id;
     private String contrasena;
-    // 1. ⚠️ CAMPO AGREGADO ⚠️
     private Carrito carrito;
 
     public Cliente(String nombre, int id, String contrasena) {
         this.nombre = nombre;
         this.id = id;
         this.contrasena = contrasena;
-        // 2. ⚠️ INICIALIZACIÓN EN CONSTRUCTOR 1 ⚠️
         this.carrito = new Carrito();
     }
 
@@ -24,7 +21,6 @@ public class Cliente implements Serializable {
         this.nombre = nombre;
         this.contrasena = contrasena;
         this.id = generarId();
-        // 2. ⚠️ INICIALIZACIÓN EN CONSTRUCTOR 2 ⚠️
         this.carrito = new Carrito();
     }
 
@@ -33,7 +29,6 @@ public class Cliente implements Serializable {
         return (int) (System.currentTimeMillis() % 1000000);
     }
 
-    // 3. ⚠️ MÉTODO GETTER AGREGADO ⚠️
     /**
      * @return El carrito de compras del cliente.
      */
@@ -62,17 +57,6 @@ public class Cliente implements Serializable {
             throw new IllegalArgumentException("El ID debe ser positivo");
         }
         this.id = id;
-    }
-
-    public String getContrasena() {
-        return contrasena;
-    }
-
-    public void setContrasena(String contrasena) {
-        if (contrasena == null || contrasena.length() < 4) {
-            throw new IllegalArgumentException("La contraseña debe tener al menos 4 caracteres");
-        }
-        this.contrasena = contrasena;
     }
 
     public boolean validarContrasena(String contrasena) {

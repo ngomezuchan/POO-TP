@@ -7,8 +7,6 @@ import java.util.List;
 public class modelo_tabla_productos extends AbstractTableModel {
     private final String[] COLUMNAS = {"ID", "Nombre", "Precio", "Stock"};
     private List<Producto> productos;
-
-    // ⚠️ ESTE CONSTRUCTOR DEBE ESTAR PRESENTE ⚠️
     public modelo_tabla_productos(List<Producto> productos) {
         this.productos = productos;
     }

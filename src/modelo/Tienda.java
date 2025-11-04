@@ -13,9 +13,9 @@ public class Tienda implements IAutenticacion {
     private List<Cliente> clientes;
     private List<Producto> productos;
     private List<Pedido> pedidos;
-    private GestorPersistencia<Cliente> gestorClientes;
-    private GestorPersistencia<Producto> gestorProductos;
-    private GestorPersistencia<Pedido> gestorPedidos;
+    private final GestorPersistencia<Cliente> gestorClientes;
+    private final GestorPersistencia<Producto> gestorProductos;
+    private final GestorPersistencia<Pedido> gestorPedidos;
 
     public Tienda() {
         this.clientes = new ArrayList<>();
@@ -23,7 +23,7 @@ public class Tienda implements IAutenticacion {
         this.pedidos = new ArrayList<>();
         this.clienteActual = null;
 
-        // Inicializar gestores de persistencia
+        // Declarados como final
         this.gestorClientes = new GestorPersistencia<>("clientes.dat");
         this.gestorProductos = new GestorPersistencia<>("productos.dat");
         this.gestorPedidos = new GestorPersistencia<>("pedidos.dat");
@@ -83,7 +83,7 @@ public class Tienda implements IAutenticacion {
         }
 
         clientes.add(cliente);
-        guardarClientes(); // guarda cliente
+        guardarClientes();
         System.out.println("Cliente registrado exitosamente: " + cliente.getNombre());
         return true;
     }
@@ -117,7 +117,7 @@ public class Tienda implements IAutenticacion {
 
         Pedido nuevoPedido = new Pedido(clienteActual, carrito);
         pedidos.add(nuevoPedido);
-        guardarPedidos(); // guarda pedido
+        guardarPedidos();
 
         return nuevoPedido;
     }
@@ -231,7 +231,7 @@ public class Tienda implements IAutenticacion {
     }
 
     public List<Producto> getProductos() {
-        return new ArrayList<>(productos); // devuelve copia para la encapsulación
+        return new ArrayList<>(productos);
     }
 
     public List<Cliente> getClientes() {

@@ -10,7 +10,6 @@ import excepciones.PagoException;
 
 public class ventana_checkout extends JFrame {
 
-    // Componentes declarados
     private JPanel panel_principal;
     private JTable tbl_carrito;
     private JButton btn_eliminar_item;
@@ -18,7 +17,6 @@ public class ventana_checkout extends JFrame {
     private JLabel lbl_total;
     private JButton btn_pagar_tarjeta;
     private JButton btn_pagar_transferencia;
-
     private final Tienda tienda;
     private final ventana_tienda ventana_padre;
     private modelo_tabla_carrito tableModel;
@@ -27,29 +25,26 @@ public class ventana_checkout extends JFrame {
         this.tienda = tienda;
         this.ventana_padre = ventana_padre;
 
-        // Llama al método de construcción para inicializar todos los componentes
         inicializarComponentes();
 
         setTitle("Finalizar Compra - Carrito");
         setContentPane(panel_principal);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setSize(950, 500);
+        setSize(1000, 500);
         setLocationRelativeTo(ventana_padre);
 
         cargarCarrito();
 
-        // Listeners
         btn_eliminar_item.addActionListener(e -> eliminarItemSeleccionado());
         btn_vaciar_carrito.addActionListener(e -> vaciarCarrito());
         btn_pagar_tarjeta.addActionListener(e -> intentarPago(1));
         btn_pagar_transferencia.addActionListener(e -> intentarPago(2));
 
-        // Al cerrar, notifica a la tienda principal para actualizar su total y stock
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosed(WindowEvent e) {
                 ventana_padre.actualizarTotalCarrito();
-                ventana_padre.cargarProductos(); // Refresca el stock en la ventana principal
+                ventana_padre.cargarProductos();
             }
         });
     }
@@ -59,52 +54,42 @@ public class ventana_checkout extends JFrame {
      * para asegurar la visibilidad del botón de transferencia.
      */
     private void inicializarComponentes() {
-        // Estructura principal
-        panel_principal = new JPanel(new BorderLayout(10, 10));
-        JPanel panel_botones = new JPanel(new GridLayout(1, 2, 10, 10)); // Contiene Opciones y Pago
+        JPanel panel_principal = new JPanel(new BorderLayout(10, 10));
+        JPanel panel_botones = new JPanel(new GridLayout(1, 2, 10, 10));
 
-        // Paneles anidados
         JPanel panel_opciones_carrito = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
 
-        // ⚠️ PANEL DE PAGO CON BORDERLAYOUT PARA SEPARAR EL TOTAL DE LOS BOTONES ⚠️
         JPanel panel_pago = new JPanel(new BorderLayout());
 
-        // Panel interno para los botones de pago, usando FlowLayout (derecha)
         JPanel panel_botones_pago = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
 
-        // Componentes (Inicializaciones)
-        tbl_carrito = new JTable();
-        btn_eliminar_item = new JButton("Eliminar Ítem Seleccionado");
-        btn_vaciar_carrito = new JButton("Vaciar Carrito");
-        lbl_total = new JLabel("Total a Pagar: $0.00", SwingConstants.RIGHT);
-        btn_pagar_tarjeta = new JButton("Pagar con Tarjeta");
-        btn_pagar_transferencia = new JButton("Pagar con Transferencia"); // Inicialización OK
+        this.tbl_carrito = new JTable();
+        this.btn_eliminar_item = new JButton("Eliminar Ítem Seleccionado");
+        this.btn_vaciar_carrito = new JButton("Vaciar Carrito");
+        this.lbl_total = new JLabel("Total a Pagar: $0.00", SwingConstants.RIGHT);
+        this.btn_pagar_tarjeta = new JButton("Pagar con Tarjeta");
+        this.btn_pagar_transferencia = new JButton("Pagar con Transferencia");
 
-        // 1. Panel de opciones de carrito (Eliminar/Vaciar)
         panel_opciones_carrito.add(btn_eliminar_item);
         panel_opciones_carrito.add(btn_vaciar_carrito);
 
-        // 2. Sub-Panel de botones de pago (Derecha)
         panel_botones_pago.add(btn_pagar_tarjeta);
         panel_botones_pago.add(btn_pagar_transferencia);
 
-        // 3. Panel de Pago Final (Contiene el Total (Izquierda) y los Botones (Derecha))
         panel_pago.add(lbl_total, BorderLayout.WEST);
         panel_pago.add(panel_botones_pago, BorderLayout.EAST);
 
 
-        // 4. Panel inferior (opciones y pago)
         panel_botones.add(panel_opciones_carrito);
         panel_botones.add(panel_pago);
 
-        // 5. Panel principal
         panel_principal.add(new JScrollPane(tbl_carrito), BorderLayout.CENTER);
         panel_principal.add(panel_botones, BorderLayout.SOUTH);
         panel_principal.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        this.panel_principal = panel_principal;
     }
 
 
-    // --- Lógica del Carrito ---
     private void cargarCarrito() {
         Carrito carrito = tienda.getClienteActual().getCarrito();
         tableModel = new modelo_tabla_carrito(carrito.getItems());
@@ -144,7 +129,6 @@ public class ventana_checkout extends JFrame {
         }
     }
 
-    // pago
     private void intentarPago(int tipoPago) {
         Carrito carrito = tienda.getClienteActual().getCarrito();
         if (carrito.estaVacio()) {
@@ -159,12 +143,12 @@ public class ventana_checkout extends JFrame {
 
             Pago pago = null;
 
-            if (tipoPago == 1) { // Tarjeta
+            if (tipoPago == 1) {
                 dialogo_pago_tarjeta dialogo = new dialogo_pago_tarjeta(this, monto);
                 dialogo.setVisible(true);
                 pago = dialogo.getPago();
 
-            } else if (tipoPago == 2) { // Transferencia
+            } else if (tipoPago == 2) {
                 dialogo_pago_transferencia dialogo = new dialogo_pago_transferencia(this, monto);
                 dialogo.setVisible(true);
                 pago = dialogo.getPago();

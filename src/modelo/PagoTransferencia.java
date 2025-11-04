@@ -23,8 +23,7 @@ public class PagoTransferencia extends Pago {
         if (banco == null || banco.trim().isEmpty()) {
             throw new PagoException("El banco no puede estar vacío");
         }
-        
-        // Simulación de validación bancaria
+
         String[] bancosValidos = {"Banco Nacional", "Banco Provincial", "Banco Santander", 
                                  "Banco BBVA", "Banco Galicia", "Banco Macro"};
         
@@ -54,10 +53,9 @@ public class PagoTransferencia extends Pago {
     public boolean procesarPago(double monto) throws PagoException {
         System.out.println("Procesando transferencia bancaria...");
         System.out.println("Conectando con " + banco + "...");
-        
-        // Simulación de procesamiento
+
         try {
-            Thread.sleep(1000); // Simula tiempo de procesamiento
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
