@@ -1,10 +1,6 @@
 package vistas;
 
-import modelo.Tienda;
-import modelo.Producto;
-import modelo.Carrito;
-import principal.Main;
-
+import modelo.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
@@ -20,6 +16,7 @@ public class ventana_tienda extends JFrame {
     private JButton btn_ver_carrito;
     private JButton btn_cerrar_sesion;
     private JLabel lbl_bienvenido;
+    private JButton btn_admin;
 
     private final Tienda tienda;
     private modelo_tabla_productos tableModel;
@@ -32,7 +29,7 @@ public class ventana_tienda extends JFrame {
         setTitle("Catálogo de Productos - " + tienda.getClienteActual().getNombre());
         setContentPane(panel_principal);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setSize(800, 600);
+        setSize(900, 600);
         setLocationRelativeTo(null);
 
         lbl_bienvenido.setText("Bienvenido, " + tienda.getClienteActual().getNombre());
@@ -40,19 +37,17 @@ public class ventana_tienda extends JFrame {
         cargarProductos();
         actualizarTotalCarrito();
 
-        //listen
+        // listeners
         btn_agregar_carrito.addActionListener(e -> agregarProductoSeleccionado());
         btn_ver_carrito.addActionListener(e -> abrirVentanaCarrito());
         btn_cerrar_sesion.addActionListener(e -> cerrarSesion());
+        btn_admin.addActionListener(e -> abrirDialogoAdmin());
 
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosed(WindowEvent e) {
                 if (tienda.hayClienteLogueado()) {
                     tienda.cerrarSesion();
-                }
-                if (ventana_tienda.getFrames().length == 0) {
-                    new Main().setVisible(true);
                 }
             }
         });
@@ -63,16 +58,23 @@ public class ventana_tienda extends JFrame {
         JPanel panel_top = new JPanel(new BorderLayout());
         JPanel panel_bottom = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
 
-        // componentes
         lbl_bienvenido = new JLabel("Bienvenido", SwingConstants.LEFT);
         lbl_total_carrito = new JLabel("Total Carrito: $0.00", SwingConstants.RIGHT);
         tbl_productos = new JTable();
         btn_agregar_carrito = new JButton("Agregar al Carrito");
         btn_ver_carrito = new JButton("Ver Carrito / Pagar");
         btn_cerrar_sesion = new JButton("Cerrar Sesión");
+        btn_admin = new JButton("Admin");
 
-        panel_top.add(lbl_bienvenido, BorderLayout.WEST);
-        panel_top.add(btn_cerrar_sesion, BorderLayout.EAST);
+        JPanel leftTop = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        leftTop.add(lbl_bienvenido);
+
+        JPanel rightTop = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        rightTop.add(btn_admin);
+        rightTop.add(btn_cerrar_sesion);
+
+        panel_top.add(leftTop, BorderLayout.WEST);
+        panel_top.add(rightTop, BorderLayout.EAST);
 
         panel_bottom.add(lbl_total_carrito);
         panel_bottom.add(btn_agregar_carrito);
@@ -142,5 +144,22 @@ public class ventana_tienda extends JFrame {
     private void cerrarSesion() {
         tienda.cerrarSesion();
         this.dispose();
+        new ventana_login(tienda).setVisible(true);
+    }
+
+    /*  ADMIN  */
+    private void abrirDialogoAdmin() {
+        String password = JOptionPane.showInputDialog(this, "Ingrese contraseña de admin:");
+        if (password == null) return;
+        if (!"admin".equals(password)) {
+            JOptionPane.showMessageDialog(this, "Contraseña incorrecta.", "Acceso denegado", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        dialogo_admin_producto dialog = new dialogo_admin_producto(this, tienda);
+        dialog.setVisible(true);
+
+        // refrescar productos al cerrar
+        cargarProductos();
     }
 }

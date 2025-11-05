@@ -1,82 +1,95 @@
 package vistas;
 
 import modelo.PagoTarjeta;
+import excepciones.PagoException;
 
 import javax.swing.*;
 import java.awt.*;
-import excepciones.PagoException;
 
 public class dialogo_pago_tarjeta extends JDialog {
-
     private final double monto;
     private PagoTarjeta pago = null;
 
-    // Componentes
-    private JTextField txt_nombre;
+    private JTextField txt_numero;
+    private JTextField txt_titular;
     private JTextField txt_vencimiento;
     private JTextField txt_cvv;
-    private JButton btn_pagar;
-    private JPanel panel_principal;
+    private JButton btn_confirmar;
 
     public dialogo_pago_tarjeta(Frame owner, double monto) {
-        super(owner, "Pagar con Tarjeta", true);
+        super(owner, "Pago con Tarjeta", true);
         this.monto = monto;
-
-        inicializarComponentes();
-
-        setContentPane(panel_principal);
+        inicializar();
         pack();
         setLocationRelativeTo(owner);
     }
 
-    private void inicializarComponentes() {
-        panel_principal = new JPanel(new GridLayout(5, 2, 10, 10));
+    private void inicializar() {
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.setBorder(BorderFactory.createEmptyBorder(15,15,15,15));
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(6,6,6,6);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 2;
 
-        JLabel lbl_monto = new JLabel("Monto a Pagar:");
-        JLabel lbl_monto_valor = new JLabel(String.format("$%.2f", monto));
+        JLabel lblMonto = new JLabel(String.format("Monto a pagar: $%.2f", monto), SwingConstants.CENTER);
+        lblMonto.setFont(lblMonto.getFont().deriveFont(Font.BOLD, 14f));
+        panel.add(lblMonto, gbc);
 
-        txt_nombre = new JTextField(20);
+        gbc.gridwidth = 1;
+        gbc.gridy++;
+        panel.add(new JLabel("Número de tarjeta:"), gbc);
+        gbc.gridx = 1;
+        txt_numero = new JTextField(20);
+        panel.add(txt_numero, gbc);
+
+        gbc.gridx = 0; gbc.gridy++;
+        panel.add(new JLabel("Titular:"), gbc);
+        gbc.gridx = 1;
+        txt_titular = new JTextField(20);
+        panel.add(txt_titular, gbc);
+
+        gbc.gridx = 0; gbc.gridy++;
+        panel.add(new JLabel("Vencimiento (MM/AA):"), gbc);
+        gbc.gridx = 1;
         txt_vencimiento = new JTextField(10);
+        panel.add(txt_vencimiento, gbc);
+
+        gbc.gridx = 0; gbc.gridy++;
+        panel.add(new JLabel("CVV:"), gbc);
+        gbc.gridx = 1;
         txt_cvv = new JTextField(5);
-        btn_pagar = new JButton("Confirmar Pago");
+        panel.add(txt_cvv, gbc);
 
-        //
-        // componentes al panel
-        panel_principal.add(lbl_monto);
-        panel_principal.add(lbl_monto_valor);
-        panel_principal.add(new JLabel("Titular:"));
-        panel_principal.add(txt_nombre);
-        panel_principal.add(new JLabel("Vencimiento (MMYY):"));
-        panel_principal.add(txt_vencimiento);
-        panel_principal.add(new JLabel("CVV:"));
-        panel_principal.add(txt_cvv);
-        panel_principal.add(new JLabel());
-        panel_principal.add(btn_pagar);
+        gbc.gridx = 0; gbc.gridy++;
+        gbc.gridwidth = 2;
+        btn_confirmar = new JButton("Confirmar Pago");
+        panel.add(btn_confirmar, gbc);
 
-        btn_pagar.addActionListener(e -> procesarDatos());
-
-        panel_principal.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        btn_confirmar.addActionListener(e -> procesarPago());
+        setContentPane(panel);
     }
 
-    private void procesarDatos() {
+    private void procesarPago() {
         try {
-            String nombre = txt_nombre.getText();
-            int vencimiento = Integer.parseInt(txt_vencimiento.getText());
-            int cvv = Integer.parseInt(txt_cvv.getText());
+            String numero = txt_numero.getText().trim();
+            String titular = txt_titular.getText().trim();
+            String venc = txt_vencimiento.getText().trim();
+            String cvv = txt_cvv.getText().trim();
 
-            PagoTarjeta nuevoPago = new PagoTarjeta(monto, nombre, vencimiento, cvv);
+            if (numero.isEmpty() || titular.isEmpty() || venc.isEmpty() || cvv.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Complete todos los campos.");
+                return;
+            }
 
-            nuevoPago.validarDatos();
+            pago = new PagoTarjeta(monto, numero, titular, venc, cvv);
+            pago.validarDatos();
+            dispose();
 
-            this.pago = nuevoPago;
-            this.dispose();
-
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Vencimiento y CVV deben ser números válidos.",
-                    "Error de Formato", JOptionPane.ERROR_MESSAGE);
-        } catch (PagoException e) {
-            JOptionPane.showMessageDialog(this, "Error de validación: " + e.getMessage(),
-                    "Error de Tarjeta", JOptionPane.ERROR_MESSAGE);
+        } catch (PagoException ex) {
+            JOptionPane.showMessageDialog(this, "Error en el pago: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Error inesperado: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 

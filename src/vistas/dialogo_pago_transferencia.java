@@ -5,79 +5,80 @@ import excepciones.PagoException;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Arrays;
-import java.util.List;
+
 
 public class dialogo_pago_transferencia extends JDialog {
 
     private final double monto;
     private PagoTransferencia pago = null;
 
-    // Componentes
-    private JComboBox<String> cmb_bancos;
-    private JButton btn_pagar;
+    private JTextField txt_cbu;
+    private JTextField txt_alias;
+    private JButton btn_confirmar;
     private JPanel panel_principal;
 
-    private static final List<String> BANCOS_DISPONIBLES = Arrays.asList(
-            "Seleccione un Banco", // Opción por defecto
-            "Banco Nacional",
-            "Banco Provincial",
-            "Banco Santander",
-            "Banco BBVA",
-            "Banco Galicia",
-            "Banco Macro"
-    );
-
     public dialogo_pago_transferencia(Frame owner, double monto) {
-        super(owner, "Pagar con Transferencia", true); // Modal
+        super(owner, "Pagar por Transferencia", true);
         this.monto = monto;
-
         inicializarComponentes();
-
         setContentPane(panel_principal);
         pack();
         setLocationRelativeTo(owner);
     }
 
     private void inicializarComponentes() {
-        panel_principal = new JPanel(new GridLayout(3, 2, 10, 10));
+        panel_principal = new JPanel(new GridLayout(4, 2, 10, 10));
 
-        JLabel lbl_monto = new JLabel("Monto a Pagar:");
+        JLabel lbl_monto = new JLabel("Monto a transferir:");
         JLabel lbl_monto_valor = new JLabel(String.format("$%.2f", monto));
 
-        // Crea el JComboBox con la lista unificada
-        cmb_bancos = new JComboBox<>(BANCOS_DISPONIBLES.toArray(new String[0]));
-        btn_pagar = new JButton("Confirmar Transferencia");
+        txt_cbu = new JTextField(22);
+        txt_alias = new JTextField(22);
+        btn_confirmar = new JButton("Confirmar Pago");
+
         panel_principal.add(lbl_monto);
         panel_principal.add(lbl_monto_valor);
-        panel_principal.add(new JLabel("Seleccione Banco:"));
-        panel_principal.add(cmb_bancos);
-        panel_principal.add(new JLabel());
-        panel_principal.add(btn_pagar);
 
-        btn_pagar.addActionListener(e -> procesarDatos());
+        panel_principal.add(new JLabel("CBU (22 dígitos):"));
+        panel_principal.add(txt_cbu);
+
+        panel_principal.add(new JLabel("Alias:"));
+        panel_principal.add(txt_alias);
+
+        panel_principal.add(new JLabel());
+        panel_principal.add(btn_confirmar);
+
+        btn_confirmar.addActionListener(e -> procesarPago());
 
         panel_principal.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
     }
 
-    private void procesarDatos() {
-        String banco = (String) cmb_bancos.getSelectedItem();
-
-        if (banco == null || banco.equals("Seleccione un Banco") || banco.trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Por favor, seleccione un banco válido.",
-                    "Datos Incompletos", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
+    private void procesarPago() {
         try {
-            PagoTransferencia nuevoPago = new PagoTransferencia(monto, banco);
+            String cbu = txt_cbu.getText().trim();
+            String alias = txt_alias.getText().trim();
+
+            if (cbu.isEmpty() || alias.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Complete todos los campos.", "Datos incompletos", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            if (!cbu.matches("\\d{22}")) {
+                JOptionPane.showMessageDialog(this, "El CBU debe tener exactamente 22 dígitos.", "Error de formato", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Crear el pago usando el constructor correcto
+            PagoTransferencia nuevoPago = new PagoTransferencia(monto, cbu, alias);
             nuevoPago.validarDatos();
+
             this.pago = nuevoPago;
             this.dispose();
 
-        } catch (PagoException e) {
-            JOptionPane.showMessageDialog(this, "Error de validación: " + e.getMessage(),
-                    "Error de Pago", JOptionPane.ERROR_MESSAGE);
+        } catch (PagoException ex) {
+            JOptionPane.showMessageDialog(this, "Error en la transferencia: " + ex.getMessage(), "Error de pago", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Error inesperado: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 

@@ -3,84 +3,25 @@ package modelo;
 import excepciones.PagoException;
 
 public class PagoTransferencia extends Pago {
-    private static final long serialVersionUID = 1L;
-    
-    private int numeroComprobante;
-    private String banco;
-    
-    public PagoTransferencia(double monto, String banco) {
+    private String cbuOrigen;
+    private String aliasOrigen;
+
+    public PagoTransferencia(double monto, String cbuOrigen, String aliasOrigen) {
         super(monto);
-        this.banco = banco;
-        this.numeroComprobante = generarNumeroComprobanteTransferencia();
+        this.cbuOrigen = cbuOrigen;
+        this.aliasOrigen = aliasOrigen;
     }
-    
-    private int generarNumeroComprobanteTransferencia() {
-        return (int) (Math.random() * 900000) + 100000;
-    }
-    
-    @Override
-    public boolean validarDatos() throws PagoException {
-        if (banco == null || banco.trim().isEmpty()) {
-            throw new PagoException("El banco no puede estar vacío");
-        }
 
-        String[] bancosValidos = {"Banco Nacional", "Banco Provincial", "Banco Santander", 
-                                 "Banco BBVA", "Banco Galicia", "Banco Macro"};
-        
-        boolean bancoValido = false;
-        for (String b : bancosValidos) {
-            if (b.equalsIgnoreCase(banco)) {
-                bancoValido = true;
-                break;
-            }
-        }
-        
-        if (!bancoValido) {
-            throw new PagoException("Banco no válido: " + banco);
-        }
-        
-        return true;
-    }
-    
     @Override
-    protected void mostrarDetallesEspecificos() {
-        System.out.println("Tipo de pago: TRANSFERENCIA");
-        System.out.println("Banco: " + banco);
-        System.out.println("Número de comprobante bancario: " + numeroComprobante);
+    public void validarDatos() throws PagoException {
+        if ((cbuOrigen == null || cbuOrigen.length() < 10) && (aliasOrigen == null || aliasOrigen.isEmpty())) {
+            throw new PagoException("Debe ingresar CBU o alias válidos.");
+        }
     }
-    
-    @Override
-    public boolean procesarPago(double monto) throws PagoException {
-        System.out.println("Procesando transferencia bancaria...");
-        System.out.println("Conectando con " + banco + "...");
 
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
-        
-        boolean resultado = super.procesarPago(monto);
-        
-        if (resultado) {
-            System.out.println("Transferencia aprobada - Comprobante: " + numeroComprobante);
-        } else {
-            System.out.println("Transferencia rechazada");
-        }
-        
-        return resultado;
-    }
-    
-    // getters y setters
-    public int getNumeroComprobanteTransferencia() {
-        return numeroComprobante;
-    }
-    
-    public String getBanco() {
-        return banco;
-    }
-    
-    public void setBanco(String banco) {
-        this.banco = banco;
+    @Override
+    public void procesar() throws PagoException {
+        this.procesado = true;
+        this.comprobante = generarComprobante();
     }
 }

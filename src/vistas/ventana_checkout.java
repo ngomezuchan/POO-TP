@@ -1,12 +1,12 @@
 package vistas;
 
 import modelo.*;
+import excepciones.PagoException;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import excepciones.PagoException;
 
 public class ventana_checkout extends JFrame {
 
@@ -49,18 +49,12 @@ public class ventana_checkout extends JFrame {
         });
     }
 
-    /**
-     * Inicializa los componentes de la GUI manualmente, utilizando layouts anidados
-     * para asegurar la visibilidad del botón de transferencia.
-     */
     private void inicializarComponentes() {
-        JPanel panel_principal = new JPanel(new BorderLayout(10, 10));
+        JPanel panel_principalLocal = new JPanel(new BorderLayout(10, 10));
         JPanel panel_botones = new JPanel(new GridLayout(1, 2, 10, 10));
 
         JPanel panel_opciones_carrito = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
-
         JPanel panel_pago = new JPanel(new BorderLayout());
-
         JPanel panel_botones_pago = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
 
         this.tbl_carrito = new JTable();
@@ -79,21 +73,23 @@ public class ventana_checkout extends JFrame {
         panel_pago.add(lbl_total, BorderLayout.WEST);
         panel_pago.add(panel_botones_pago, BorderLayout.EAST);
 
-
         panel_botones.add(panel_opciones_carrito);
         panel_botones.add(panel_pago);
 
-        panel_principal.add(new JScrollPane(tbl_carrito), BorderLayout.CENTER);
-        panel_principal.add(panel_botones, BorderLayout.SOUTH);
-        panel_principal.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        this.panel_principal = panel_principal;
+        panel_principalLocal.add(new JScrollPane(tbl_carrito), BorderLayout.CENTER);
+        panel_principalLocal.add(panel_botones, BorderLayout.SOUTH);
+        panel_principalLocal.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        this.panel_principal = panel_principalLocal;
     }
-
 
     private void cargarCarrito() {
         Carrito carrito = tienda.getClienteActual().getCarrito();
-        tableModel = new modelo_tabla_carrito(carrito.getItems());
-        tbl_carrito.setModel(tableModel);
+        if (tableModel == null) {
+            tableModel = new modelo_tabla_carrito(carrito);
+            tbl_carrito.setModel(tableModel);
+        } else {
+            tableModel.refrescar();
+        }
         lbl_total.setText(String.format("Total a Pagar: $%.2f", carrito.getTotal()));
     }
 
@@ -157,7 +153,12 @@ public class ventana_checkout extends JFrame {
             if (pago != null) {
                 pedido.procesarPago(pago);
 
+                tienda.procesarCompra(pedido);
                 tienda.getClienteActual().getCarrito().vaciarCarrito();
+
+                ventana_padre.cargarProductos();
+                ventana_padre.actualizarTotalCarrito();
+
                 JOptionPane.showMessageDialog(this,
                         "¡PEDIDO COMPLETADO EXITOSAMENTE!\nComprobante: " + pago.obtenerComprobante(),
                         "Pago Aprobado", JOptionPane.INFORMATION_MESSAGE);
@@ -171,6 +172,9 @@ public class ventana_checkout extends JFrame {
 
         } catch (IllegalStateException | PagoException e) {
             JOptionPane.showMessageDialog(this, "Error al procesar el pedido/pago: " + e.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error inesperado: " + e.getMessage(),
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
     }

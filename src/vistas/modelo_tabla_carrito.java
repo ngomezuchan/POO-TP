@@ -1,19 +1,21 @@
 package vistas;
 
+import modelo.Carrito;
 import modelo.ItemCarrito;
 import javax.swing.table.AbstractTableModel;
 import java.util.List;
 
 public class modelo_tabla_carrito extends AbstractTableModel {
     private final String[] COLUMNAS = {"ID Producto", "Nombre", "Cantidad", "Precio Unit.", "Subtotal"};
-    private List<ItemCarrito> items;
+    private final Carrito carrito;
 
-    public modelo_tabla_carrito(List<ItemCarrito> items) {
-        this.items = items;
+    public modelo_tabla_carrito(Carrito carrito) {
+        this.carrito = carrito;
     }
 
     @Override
     public int getRowCount() {
+        List<ItemCarrito> items = carrito.getItems();
         return items.size();
     }
 
@@ -29,6 +31,7 @@ public class modelo_tabla_carrito extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
+        List<ItemCarrito> items = carrito.getItems();
         ItemCarrito item = items.get(rowIndex);
         switch (columnIndex) {
             case 0: return item.getProducto().getId();
@@ -41,6 +44,11 @@ public class modelo_tabla_carrito extends AbstractTableModel {
     }
 
     public String getProductoIdAt(int rowIndex) {
+        List<ItemCarrito> items = carrito.getItems();
         return items.get(rowIndex).getProducto().getId();
+    }
+
+    public void refrescar() {
+        fireTableDataChanged();
     }
 }
